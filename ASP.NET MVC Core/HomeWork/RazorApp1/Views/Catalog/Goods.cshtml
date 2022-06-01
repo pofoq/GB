@@ -1,0 +1,19 @@
+﻿@model string
+
+@{
+    ViewData["Title"] = "Category List";
+}
+
+<form method="post">
+    Id: <input type="text" name="id" required />
+    <br />
+    Name: <input type="text" name="name" />
+    <br />
+    Img: <input type="url" name="img" />
+    <br />
+    <input type="submit" name="submit" value="Create" />
+</form>
+
+<div>
+    <h3>@Model</h3>
+</div>

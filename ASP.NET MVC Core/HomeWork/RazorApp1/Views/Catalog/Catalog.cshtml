@@ -1,0 +1,11 @@
+﻿@model Catalog
+
+@{
+    ViewData["Title"] = "Category List";
+}
+
+@foreach (var category in Model?.Goods)
+{
+    <div>@category.Id : @category.Name <img src="@category.Img" /></div>
+}
+
