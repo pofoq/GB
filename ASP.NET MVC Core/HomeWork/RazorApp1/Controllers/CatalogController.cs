@@ -23,7 +23,7 @@ namespace RazorApp1.Controllers
         public IActionResult Goods([FromForm] Good good)
         {
             _catalog.Goods.Add(good);
-            return View(model: $"Good added. Total goods: {_catalog.Goods.Count}");
+            return View(model: $"Good added. Total goods: {_catalog.Goods.Count()}");
         }
     }
 }
