@@ -4,7 +4,7 @@
     ViewData["Title"] = "Category List";
 }
 
-<form method="post">
+<form method="post" action="add">
     Id: <input type="text" name="id" required />
     <br />
     Name: <input type="text" name="name" />
@@ -12,6 +12,12 @@
     Img: <input type="url" name="img" />
     <br />
     <input type="submit" name="submit" value="Create" />
+</form>
+
+<form method="post" action="remove">
+    Id: <input type="number" name="id" required />
+    <br />
+    <input type="submit" name="submit" value="Remove" />
 </form>
 
 <div>

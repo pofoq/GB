@@ -1,60 +1,35 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Concurrent;
 
 namespace RazorApp1.Models
 {
     public class ConcurrentList<T> : IEnumerable<T>
     {
-        private readonly List<T> _list = new();
-        private readonly object _lock = new object();
+        private readonly ConcurrentDictionary<int,T> _list = new();
 
-        public void Add(T obj)
+        public bool Add(int id, T obj)
         {
-            lock (_lock)
-            {
-                _list.Add(obj);
-            }
+            return _list.TryAdd(id, obj);
         }
 
-        public void Remove(T obj)
+        public bool Remove(int id)
         {
-            lock (_lock)
-            {
-                _list.Remove(obj);
-            }
-        }
-
-        public List<T> Sort()
-        {
-            lock (_lock)
-            {
-                _list.Sort();
-            }
-            return _list;
+            return _list.TryRemove(_list.FirstOrDefault(el => el.Key == id));
         }
 
         public int Count()
         {
-            lock (_lock)
-            {
-                return _list.Count;
-            }
+            return _list.Count;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
-            lock (_lock)
-            {
-                return _list.GetEnumerator();
-            }
+            return _list.Values.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            lock (_lock)
-            {
-                return _list.GetEnumerator();
-            }
+            return _list.Values.GetEnumerator();
         }
     }
 }
