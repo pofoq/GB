@@ -1,10 +1,10 @@
-﻿@model Catalog
+﻿@model IReadOnlyCollection<Good>
 
 @{
     ViewData["Title"] = "Category List";
 }
 
-@foreach (var category in Model?.Goods)
+@foreach (var category in Model)
 {
     <div>@category.Id : @category.Name <img src="@category.Img" /></div>
 }
