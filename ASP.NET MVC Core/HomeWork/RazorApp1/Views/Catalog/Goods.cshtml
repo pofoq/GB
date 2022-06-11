@@ -4,22 +4,39 @@
     ViewData["Title"] = "Category List";
 }
 
-<form method="post" action="add">
-    Id: <input type="text" name="id" required />
-    <br />
-    Name: <input type="text" name="name" />
-    <br />
-    Img: <input type="url" name="img" />
-    <br />
-    <input type="submit" name="submit" value="Create" />
-</form>
-
-<form method="post" action="remove">
-    Id: <input type="number" name="id" required />
-    <br />
-    <input type="submit" name="submit" value="Remove" />
-</form>
-
+@{
+    var email = @ViewData[@RazorApp1.Domain.DataKey.Email] ?? @Context.Request.Cookies[@RazorApp1.Domain.DataKey.Email];
+}
+<div>
+    <form method="post" action="email">
+        Email: <input type="email" name="email" />
+        <br />
+        <span>@email</span>
+        <br />
+        <input type="submit" name="submit" value="Set" />
+    </form>
+</div>
+<br />
+<div>
+    <form method="post" action="add">
+        Id: <input type="text" name="id" required />
+        <br />
+        Name: <input type="text" name="name" />
+        <br />
+        Img: <input type="url" name="img" />
+        <br />
+        <input type="submit" name="submit" value="Create" />
+    </form>
+</div>
+<br />
+<div>
+    <form method="post" action="remove">
+        Id: <input type="number" name="id" required />
+        <br />
+        <input type="submit" name="submit" value="Remove" />
+    </form>
+</div>
+<br />
 <div>
     <h3>@Model</h3>
 </div>
