@@ -22,8 +22,15 @@ namespace RazorApp1.Controllers
         [HttpPost]
         public IActionResult Goods([FromForm] Good good)
         {
-            _catalog.Goods.Add(good);
-            return View(model: $"Good added. Total goods: {_catalog.Goods.Count()}");
+            _catalog.Add(good);
+            return View(model: $"Good added. Total goods: {_catalog.Count}");
+        }
+
+        [HttpPost]
+        public IActionResult Remove([FromForm] int id)
+        {
+            var result = _catalog.Remove(id) ? "Good is delted." : "Something wrong.";
+            return View("Goods", model: $"Result: {result}");
         }
     }
 }
