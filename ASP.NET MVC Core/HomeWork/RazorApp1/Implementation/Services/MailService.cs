@@ -4,11 +4,9 @@ using MimeKit;
 using RazorApp1.Domain;
 using RazorApp1.Domain.Services.MailService;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 namespace RazorApp1.Implementation.Services
 {
-    //smtp.beget.com (порт 25) Логин: asp2022gb@rodion-m.ru Пароль: 3drtLSa1
-    public class MailService : IMailService
+    public class MailService : IMailService, IDisposable
     {
         public string RecipientEmail
         {
@@ -31,6 +29,7 @@ namespace RazorApp1.Implementation.Services
             }
         }
 
+        private SmtpClient _smtpClient;
         private string _name;
         private string _from;
         private string _password;
@@ -39,15 +38,18 @@ namespace RazorApp1.Implementation.Services
         private bool _useSsl;
         private HttpContext _context;
 
-        public MailService(IOptions<MailOption> option, IHttpContextAccessor context)//, HttpRequest request, HttpResponse response)
+        public MailService(IOptions<MailOption> option, IHttpContextAccessor context)
         {
+            ArgumentNullException.ThrowIfNull(context?.HttpContext);
+
             _name = option.Value.Name;
             _from = option.Value.From;
             _password = option.Value.Password;
             _server = option.Value.Server;
             _port = option.Value.Port;
             _useSsl = option.Value.UseSsl;
-            _context = context?.HttpContext;
+            _context = context.HttpContext;
+            _smtpClient = new SmtpClient();
         }
 
         public async Task SendEmailAsync(string address, string subject, string body, CancellationToken token = default)
@@ -67,17 +69,30 @@ namespace RazorApp1.Implementation.Services
                 Text = body
             };
 
-            using var client = new SmtpClient();
-
-            await client.ConnectAsync(_server, _port, _useSsl, token);
-            await client.AuthenticateAsync(_from, _password, token);
-            await client.SendAsync(message, token);
-            await client.DisconnectAsync(true, token);
+            if (!_smtpClient.IsConnected)
+            {
+                await _smtpClient.ConnectAsync(_server, _port, _useSsl, token);
+            }
+            if (!_smtpClient.IsAuthenticated)
+            {
+                await _smtpClient.AuthenticateAsync(_from, _password, token);
+            }
+            await _smtpClient.SendAsync(message, token);
         }
 
         public async Task SendEmailAsync(string subject, string body, CancellationToken token = default)
         {
             await SendEmailAsync(RecipientEmail, subject, body, token);
+        }
+
+        public async void Dispose()
+        {
+            if (_smtpClient.IsConnected)
+            {
+                await _smtpClient.DisconnectAsync(true, _context.RequestAborted);
+            }
+
+            _smtpClient.Dispose();
         }
     }
 }

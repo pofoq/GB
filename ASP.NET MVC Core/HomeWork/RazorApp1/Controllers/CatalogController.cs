@@ -11,11 +11,13 @@ namespace RazorApp1.Controllers
     {
         private ICatalogService _catalogService;
         private IMailService _mailService;
+        private ILogger<CatalogController> _logger;
 
-        public CatalogController(ICatalogService catalogService, IMailService mailService)
+        public CatalogController(ICatalogService catalogService, IMailService mailService, ILogger<CatalogController> logger)
         {
             _catalogService = catalogService;
             _mailService = mailService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -35,6 +37,9 @@ namespace RazorApp1.Controllers
         {
             _mailService.RecipientEmail = email;
             ViewData[DataKey.Email] = $"New Email: {email}";
+
+            _logger.LogDebug("Debug: new email set to:" + email);
+
             return View(viewName: "Goods");
         }
 
@@ -43,6 +48,7 @@ namespace RazorApp1.Controllers
         {
             var result = await _catalogService.AddAsync(good);
             var msg = result ? $"Good is added. Total goods: {_catalogService.Goods.Count}." : "Something wrong.";
+            _logger.LogInformation(msg);
             return View(viewName: "Goods", model: msg);
         }
 
@@ -51,26 +57,8 @@ namespace RazorApp1.Controllers
         {
             var result = await _catalogService.RemoveAsync(id);
             var msg = result ? "Good is delted. Total goods: {_catalogService.Goods.Count}." : "Something wrong.";
+            _logger.LogInformation(msg);
             return View(viewName: "Goods", model: msg);
-        }
-
-        private void SetEmail(string email)
-        {
-            if (!Request.Cookies.ContainsKey(DataKey.Email))
-            {
-                Response.Cookies.Delete(DataKey.Email);
-            }
-
-            Response.Cookies.Append(DataKey.Email, email);
-        }
-
-        private string GetEmail()
-        {
-            if (Request.Cookies.ContainsKey(DataKey.Email))
-            {
-                return Request.Cookies[DataKey.Email] ?? "";
-            }
-            return "";
         }
     }
 }
