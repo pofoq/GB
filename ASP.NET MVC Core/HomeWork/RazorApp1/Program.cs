@@ -21,6 +21,8 @@ builder.Services.AddScoped<ICatalogService, CatalogService>();
 // Имитация БД. Один раз создаем и обращаемся всегда к одному объекту
 builder.Services.AddSingleton<Data>();
 
+builder.Services.AddScoped<IFileReaderService, FileReaderService>();
+
 builder.Host.UseSerilog((ctx, conf) => conf
         .ReadFrom.Configuration(ctx.Configuration)
         //.Enrich.FromLogContext()
