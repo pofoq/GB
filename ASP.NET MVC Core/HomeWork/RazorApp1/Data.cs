@@ -2,8 +2,8 @@
 
 namespace RazorApp1
 {
-    public static class Data
+    public class Data
     {
-        public static Catalog Catalog = new();
+        public Catalog Catalog = new();
     }
 }
