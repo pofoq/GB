@@ -9,15 +9,21 @@ namespace RazorApp1.Controllers
 {
     public class CatalogController : Controller
     {
-        private ICatalogService _catalogService;
-        private IMailService _mailService;
-        private ILogger<CatalogController> _logger;
+        private readonly ICatalogService _catalogService;
+        private readonly IMailService _mailService;
+        private readonly ILogger<CatalogController> _logger;
+        private readonly CancellationToken _token;
 
-        public CatalogController(ICatalogService catalogService, IMailService mailService, ILogger<CatalogController> logger)
+        public CatalogController(
+            ICatalogService catalogService, 
+            IMailService mailService, 
+            ILogger<CatalogController> logger, 
+            IHttpContextAccessor accessor)
         {
             _catalogService = catalogService;
             _mailService = mailService;
             _logger = logger;
+            _token = accessor?.HttpContext?.RequestAborted ?? default;
         }
 
         [HttpGet]
@@ -29,6 +35,7 @@ namespace RazorApp1.Controllers
         [HttpGet]
         public IActionResult Goods()
         {
+            ViewData[DataKey.Email] = _mailService.RecipientEmail;
             return View();
         }
 
@@ -38,7 +45,7 @@ namespace RazorApp1.Controllers
             _mailService.RecipientEmail = email;
             ViewData[DataKey.Email] = $"New Email: {email}";
 
-            _logger.LogDebug("Debug: new email set to:" + email);
+            _logger.LogDebug("New email set to: {email}", email);
 
             return View(viewName: "Goods");
         }
@@ -46,9 +53,9 @@ namespace RazorApp1.Controllers
         [HttpPost]
         public async Task<IActionResult> Add([FromForm] Good good)
         {
-            var result = await _catalogService.AddAsync(good);
+            var result = await _catalogService.AddAsync(good, _token);
             var msg = result ? $"Good is added. Total goods: {_catalogService.Goods.Count}." : "Something wrong.";
-            _logger.LogInformation(msg);
+            _logger.LogInformation("{add}:: {msg}", nameof(Add), msg);
             return View(viewName: "Goods", model: msg);
         }
 
@@ -57,7 +64,7 @@ namespace RazorApp1.Controllers
         {
             var result = await _catalogService.RemoveAsync(id);
             var msg = result ? "Good is delted. Total goods: {_catalogService.Goods.Count}." : "Something wrong.";
-            _logger.LogInformation(msg);
+            _logger.LogInformation("{method}:: {message}", nameof(Remove), msg);
             return View(viewName: "Goods", model: msg);
         }
     }
