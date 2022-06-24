@@ -1,0 +1,17 @@
+Методичка 8. MVC. Начало работы
+	https://gbcdn.mrgcdn.ru/uploads/asset/3851116/attachment/e9e5d169232358b6c3bf446500fda9d7.pdf
+
+Презентация 8. MVC. Начало работы
+	https://gbcdn.mrgcdn.ru/uploads/asset/3851117/attachment/8532a13a7f85bc7116ad5bd10a78815b.pdf
+
+Презентация: Обработка ошибок
+	https://docs.google.com/presentation/d/1fl6z4o4olGJuRB_OiOeh3z-RRLMFX8Z_WgkcCG5VxKw/edit?usp=sharing
+
+Пример реализации доменных событий с вебинара:
+	https://github.com/rodion-m/GB_ASPNETCourse_202206/tree/master/Lesson.DI/DomainEvents
+
+Статья про доменные события: 
+	https://enterprisecraftsmanship.com/posts/domain-events-simple-reliable-solution/
+
+Пример решения через MediatR
+	https://github.com/rodion-m/GB_ASPNETCourse_202206/tree/master/Lesson.DomainEventsWithMediatR
