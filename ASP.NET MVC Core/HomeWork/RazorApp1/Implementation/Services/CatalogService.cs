@@ -1,41 +1,49 @@
 ﻿using RazorApp1.Domain.Services;
-using RazorApp1.Domain.Services.MailService;
 using RazorApp1.Models;
+using MediatR;
+using RazorApp1.Domain.Events;
 
 namespace RazorApp1.Implementation.Services
 {
     public class CatalogService : ICatalogService
     {
         private readonly Catalog _catalog;
-        private readonly IMailService _mailService;
+        private readonly IMediator _mediator;
 
-        public CatalogService(IMailService mailService, Data data)
+        public CatalogService(IMediator mediator, Data data)
         {
-            _mailService = mailService;
+            _mediator = mediator;
             _catalog = data.Catalog;
         }
 
-        public IReadOnlyCollection<Good> Goods => _catalog.Goods;
+        public IReadOnlyCollection<Product> Products => _catalog.Products;
 
-        public async Task<bool> AddAsync(Good good, CancellationToken token = default)
+        public async Task<bool> AddAsync(Product product, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            var result = _catalog.Add(good);
+            var isAdded = _catalog.Add(product);
 
-            var msg = result ? "Good is added." : "Something wrong.";
+            if (isAdded)
+            {
+                var notification = new ProductAdded(product);
+                await _mediator.Publish(notification, token);
+            }
 
-            await _mailService.SendEmailAsync("Add Good.", $"<h3> {msg} </h3>", token);
-            return result;
+            return isAdded;
         }
 
         public async Task<bool> RemoveAsync(int id, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            var result = _catalog.Remove(id);
-            var msg = result ? "Delete Good." : "Something wrong.";
+            var isDeleted = _catalog.Remove(id);
 
-            await _mailService.SendEmailAsync(msg, $"<h2> {msg} </h2>", token);
-            return result;
+            if (isDeleted)
+            {
+                var notification = new ProductDeleted(id);
+                await _mediator.Publish(notification, token);
+            }
+
+            return isDeleted;
         }
     }
 }
