@@ -2,6 +2,7 @@ using RazorApp1;
 using RazorApp1.Domain.Services;
 using RazorApp1.Domain.Services.MailService;
 using RazorApp1.Implementation.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,14 @@ builder.Services.AddScoped<IMailService, MailService>();
 builder.Services.AddScoped<ICatalogService, CatalogService>();
 // Имитация БД. Один раз создаем и обращаемся всегда к одному объекту
 builder.Services.AddSingleton<Data>();
+
+builder.Host.UseSerilog((ctx, conf) => conf
+        .ReadFrom.Configuration(ctx.Configuration)
+        //.Enrich.FromLogContext()
+        //.WriteTo.Console(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
+        //.WriteTo.File("log/log_.txt", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Verbose)
+        //.WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day)
+);
 
 var app = builder.Build();
 
