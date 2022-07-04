@@ -1,7 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using RazorApp1.Domain;
 using RazorApp1.Domain.Services.MailService;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -10,29 +9,7 @@ namespace RazorApp1.Implementation.Services
 {
     public class MailService : IMailService
     {
-        public string RecipientEmail
-        {
-            get
-            {
-                if (_context != null && _context.Request.Cookies.ContainsKey(DataKey.Email))
-                {
-                    return _context.Request.Cookies[DataKey.Email] ?? "";
-                }
-                return _mailOption.To;
-            }
-            set
-            {
-                if (_context != null)
-                {
-                    if (_context.Request.Cookies.ContainsKey(DataKey.Email))
-                    {
-                        _context.Response.Cookies.Delete(DataKey.Email);
-                    }
-
-                    _context.Response.Cookies.Append(DataKey.Email, value);
-                }
-            }
-        }
+        public string RecipientEmail => _contextData.RecipientEmail ?? _mailOption.To;
 
         private readonly MailOption _mailOption;
         private readonly SmtpClient _smtpClient;
@@ -43,11 +20,10 @@ namespace RazorApp1.Implementation.Services
         private readonly int _port;
         private readonly bool _useSsl;
         private readonly ILogger<MailService> _logger;
-        private readonly HttpContext? _context;
+        private readonly ContextData _contextData;
 
-        public MailService(IOptions<MailOption> option, ILogger<MailService> logger, IHttpContextAccessor accessor)
+        public MailService(IOptions<MailOption> option, ILogger<MailService> logger, ContextData contextData)
         {
-            _context = accessor?.HttpContext;
             _mailOption = option.Value;
             _name = option.Value.Name;
             _from = option.Value.From;
@@ -57,6 +33,7 @@ namespace RazorApp1.Implementation.Services
             _useSsl = option.Value.UseSsl;
             _smtpClient = new SmtpClient();
             _logger = logger;
+            _contextData = contextData;
         }
 
         public async Task SendEmailAsync(string to, string subject, string body, CancellationToken token = default)

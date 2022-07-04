@@ -1,18 +1,9 @@
 using RazorApp1;
-using RazorApp1.Domain.Services;
-using RazorApp1.Domain.Services.MailService;
-using RazorApp1.Implementation.BackgroundServices;
-using RazorApp1.Implementation.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var config = Config.Build();
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-builder.Services.Configure<MailOption>(config.GetSection(nameof(MailOption)));
 
 builder.Host.UseSerilog((ctx, conf) => conf
         .ReadFrom.Configuration(ctx.Configuration)
@@ -22,19 +13,7 @@ builder.Host.UseSerilog((ctx, conf) => conf
 //.WriteTo.File("log-.txt", rollingInterval: RollingInterval.Day)
 );
 
-// Имитация БД. Один раз создаем и обращаемся всегда к одному объекту
-builder.Services.AddSingleton<Data>();
-
-// Майл сервис содается один раз в рамказ одного запроса, потому что его метод SendEmailAsync включает полный цикл
-// подключение, авторизация, отключение
-builder.Services.AddScoped<IMailService, MailService>();
-// Scoped - т.к. обращается к MailService. А так можно было сделать singlton
-builder.Services.AddScoped<ICatalogService, CatalogService>();
-builder.Services.AddScoped<IFileReaderService, FileReaderService>();
-
-builder.Services.AddHostedService<ServerWorkReport>();
-
-builder.Services.AddHttpContextAccessor();
+builder.Services.RegisterServices(config);
 
 var app = builder.Build();
 

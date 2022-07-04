@@ -5,7 +5,7 @@ namespace RazorApp1.Implementation.BackgroundServices
 {
     public class ServerWorkReport : BackgroundService
     {
-        private readonly TimeSpan _timer = TimeSpan.FromSeconds(10);
+        private readonly TimeSpan _timer = TimeSpan.FromHours(1);
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<ServerWorkReport> _logger;
 
@@ -21,7 +21,7 @@ namespace RazorApp1.Implementation.BackgroundServices
             var swServer = Stopwatch.StartNew();
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
-                await SendReport($"Server works good {swServer.Elapsed.Hours} hours", stoppingToken);
+                await SendReport($"Server works product {swServer.Elapsed.Hours} hours", stoppingToken);
             }
         }
 
