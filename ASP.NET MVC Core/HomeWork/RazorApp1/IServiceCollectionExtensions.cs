@@ -4,6 +4,7 @@ using RazorApp1.Implementation.BackgroundServices;
 using RazorApp1.Implementation.Services;
 using MediatR;
 using System.Reflection;
+using Microsoft.AspNetCore.HttpLogging;
 
 namespace RazorApp1
 {
@@ -17,22 +18,25 @@ namespace RazorApp1
 
 
             // Имитация БД. Один раз создаем и обращаемся всегда к одному объекту
-            services.AddSingleton<Data>();
+            services.AddSingleton<Data>()
 
             // Майл сервис содается один раз в рамказ одного запроса, потому что его метод SendEmailAsync включает полный цикл
             // подключение, авторизация, отключение
-            services.AddScoped<IMailService, MailService>();
+                .AddScoped<IMailService, MailService>()
             // Scoped - т.к. обращается к MailService. А так можно было сделать singlton
-            services.AddScoped<ICatalogService, CatalogService>();
-            services.AddScoped<IFileReaderService, FileReaderService>();
-            
-            services.AddHostedService<ServerWorkReport>();
-            
-            services.AddHttpContextAccessor();
-
-            services.AddMediatR(Assembly.GetExecutingAssembly());
-
-            services.AddScoped<ContextData>();
+                .AddScoped<ICatalogService, CatalogService>()
+                .AddScoped<IFileReaderService, FileReaderService>()
+                .AddHostedService<ServerWorkReport>()
+                .AddHttpContextAccessor()
+                .AddMediatR(Assembly.GetExecutingAssembly())
+                .AddScoped<ContextData>()
+                .AddHttpLogging(opt =>
+                {
+                    opt.LoggingFields = HttpLoggingFields.RequestHeaders
+                        | HttpLoggingFields.ResponseHeaders
+                        | HttpLoggingFields.RequestBody
+                        | HttpLoggingFields.ResponseBody;
+                });
 
             return services;
         }

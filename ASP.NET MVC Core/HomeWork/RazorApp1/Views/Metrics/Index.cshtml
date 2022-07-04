@@ -1,0 +1,11 @@
+﻿@model IReadOnlyCollection<Metric>
+
+@{
+    ViewData["Title"] = "Page Counter";
+}
+
+@foreach (var pc in Model)
+{
+    <div>@pc.Path : @pc.Count</div>
+}
+
