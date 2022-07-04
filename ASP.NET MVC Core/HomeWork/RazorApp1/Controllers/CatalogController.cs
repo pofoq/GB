@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RazorApp1.Domain;
-using RazorApp1.Domain.Events;
 using RazorApp1.Domain.Services;
 using RazorApp1.Models;
 using System.ComponentModel.DataAnnotations;
