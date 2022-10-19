@@ -1,0 +1,14 @@
+https://gbcdn.mrgcdn.ru/uploads/record/200208/attachment/5d341040f6d2fa567c95add47703c3b0.mp4
+
+https://docs.google.com/presentation/d/17ZDwOMvuAevR_gPxuvMuAXkLhA8anHRoCracyCV-fDE/edit#slide=id.g13b33691853_0_203
+
+Презентация с последнего вебинара с полезными материалами
+ (https://docs.google.com/presentation/d/17ZDwOMvuAevR_gPxuvMuAXkLhA8anHRoCracyCV-fDE/edit?usp=sharing)
+
+Список вопросов и задачек по ASP.NET Core  
+ (https://gist.github.com/rodion-m/4039126cfc4541ee7982a567dab5b803#junior-3-%D0%B1%D0%B0%D0%BB%D0%BB%D0%B0-%D0%B7%D0%B0-%D0%BE%D1%82%D0%B2%D0%B5%D1%82-%D0%BC%D0%B0%D0%BA%D1%81-3-%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D0%B0)
+
+Список вопросов и задачек по многопоточности/асинхронности
+ (https://github.com/rodion-m/SystemProgrammingCourse2022/blob/master/EXAM.md)
+
+Канал "Программист-самоучка" (https://t.me/selfmadeprog)
